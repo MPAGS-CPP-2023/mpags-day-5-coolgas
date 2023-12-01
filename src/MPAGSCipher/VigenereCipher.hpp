@@ -3,16 +3,17 @@
 
 #include "CipherMode.hpp"
 #include "CaesarCipher.hpp"
+#include "Cipher.hpp"
 
 #include <string>
 #include <map>
 
-class VigenereCipher
+class VigenereCipher : public Cipher
 {
 public:
     explicit VigenereCipher( const std::string& key );
     void setKey( const std::string& key );
-    std::string applyCipher( const std::string& inputText, const CipherMode cipherMode  ) const;
+    std::string applyCipher( const std::string& inputText, const CipherMode cipherMode  ) const override;
 
 private:
     std::string key_{""};
