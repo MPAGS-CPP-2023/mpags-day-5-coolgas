@@ -5,6 +5,15 @@
 
 #include "CipherMode.hpp"
 
+
+/**
+ * \file Cipher.hpp
+ * Contains a pABC (purely Abstract Base Class) for each cipher implemented
+*/
+/**
+ * \class Cipher
+ * \brief a pABC for CaesarCipher, PlayfairCipher and VigenereCipher
+*/
 class Cipher
 {
 public:
