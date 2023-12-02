@@ -3,6 +3,7 @@
 #include "catch.hpp"
 
 #include "ProcessCommandLine.hpp"
+#include "CipherFactory.hpp"
 
 TEST_CASE("Help found correctly", "[commandline]")
 {
@@ -140,4 +141,17 @@ TEST_CASE("Cipher type declared with Playfair cipher")
     REQUIRE(res);
     REQUIRE(settings.cipherType.size() == 1);
     REQUIRE(settings.cipherType[0] == CipherType::Playfair);
+}
+
+TEST_CASE("Cipher inventory defined with correct order")
+{
+    ProgramSettings settings{false, false, "", "", {}, {}, {}, CipherMode::Encrypt};
+    const std::vector<std::string> cmdLine{"mpags-cipher", "--multi-cipher", "2", \
+       "-c", "playfair", "-k", "KEY", "-c", "caesar", "-k", "5"};
+    const bool res{processCommandLine(cmdLine, settings)};
+
+    REQUIRE(res);
+    REQUIRE(settings.cipherInventory.size() == 2);
+    // REQUIRE(settings.cipherInventory[0] == CipherFactory::makeCipher(CipherType::Playfair, settings.cipherKey[0]));
+    REQUIRE(settings.cipherInventory[1] == CipherFactory::makeCipher(CipherType::Caesar, settings.cipherKey[1]));
 }
