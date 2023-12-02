@@ -152,6 +152,6 @@ TEST_CASE("Cipher inventory defined with correct order")
 
     REQUIRE(res);
     REQUIRE(settings.cipherInventory.size() == 2);
-    // REQUIRE(settings.cipherInventory[0] == CipherFactory::makeCipher(CipherType::Playfair, settings.cipherKey[0]));
+    REQUIRE(settings.cipherInventory[0] == CipherFactory::makeCipher(CipherType::Playfair, settings.cipherKey[0]));
     REQUIRE(settings.cipherInventory[1] == CipherFactory::makeCipher(CipherType::Caesar, settings.cipherKey[1]));
 }
