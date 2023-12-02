@@ -3,9 +3,11 @@
 
 #include "CipherMode.hpp"
 #include "CipherType.hpp"
+#include "Cipher.hpp"
 
 #include <string>
 #include <vector>
+#include <memory>
 
 /**
  * \file ProcessCommandLine.hpp
@@ -29,6 +31,8 @@ struct ProgramSettings {
     std::vector<std::string> cipherKey;
     /// Flag indicating which cipher to use (e.g. Caesar, Playfair, etc.)
     std::vector<CipherType> cipherType;
+    /// Inventory of smart pointers in case multiple ciphers are needed
+    std::vector<std::unique_ptr<Cipher>> cipherInventory;
     /// Flag indicating the mode in which the cipher should run (i.e. encrypt or decrypt)
     CipherMode cipherMode;
 };

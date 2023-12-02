@@ -1,4 +1,5 @@
 #include "ProcessCommandLine.hpp"
+#include "CipherFactory.hpp"
 
 #include <iostream>
 #include <string>
@@ -11,7 +12,7 @@ bool processCommandLine(const std::vector<std::string>& cmdLineArgs,
     bool processStatus{true};
 
     // Default to expecting information about one cipher
-    const std::size_t nExpectedCiphers{1};
+    std::size_t nExpectedCiphers{1};
     settings.cipherType.reserve(nExpectedCiphers);
     settings.cipherKey.reserve(nExpectedCiphers);
 
@@ -23,6 +24,15 @@ bool processCommandLine(const std::vector<std::string>& cmdLineArgs,
             // Set the indicator and terminate the loop
             settings.helpRequested = true;
             break;
+        } else if (cmdLineArgs[i] == "--multi-cipher") {
+            if (i == nCmdLineArgs - 1) {
+                std::cerr << "[error] --multi-cipher requires a number argument" << std::endl;
+                processStatus = false;
+                break; 
+            } else {
+                nExpectedCiphers = std::stoul(cmdLineArgs[i+1]);
+                ++i;
+            }
         } else if (cmdLineArgs[i] == "--version") {
             // Set the indicator and terminate the loop
             settings.versionRequested = true;
@@ -128,6 +138,10 @@ bool processCommandLine(const std::vector<std::string>& cmdLineArgs,
                   << "        but received " << nTypes << " types and " << nKeys
                   << " keys" << std::endl;
         processStatus = false;
+    } else {
+        for (std::size_t i{0}; i < nExpectedCiphers; ++i) {
+            settings.cipherInventory.push_back(CipherFactory::makeCipher(settings.cipherType[i], settings.cipherKey[i]));
+        }
     }
 
     return processStatus;

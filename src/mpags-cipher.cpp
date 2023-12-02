@@ -5,12 +5,14 @@
 #include "PlayfairCipher.hpp"
 #include "ProcessCommandLine.hpp"
 #include "TransformChar.hpp"
+#include "CipherFactory.hpp"
 
 #include <cctype>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
 
 int main(int argc, char* argv[])
 {
@@ -18,7 +20,7 @@ int main(int argc, char* argv[])
     const std::vector<std::string> cmdLineArgs{argv, argv + argc};
 
     // Options that might be set by the command-line arguments
-    ProgramSettings settings{false, false, "", "", {}, {}, CipherMode::Encrypt};
+    ProgramSettings settings{false, false, "", "", {}, {}, {}, CipherMode::Encrypt};
 
     // Process command line arguments
     const bool cmdLineStatus{processCommandLine(cmdLineArgs, settings)};
@@ -90,24 +92,19 @@ int main(int argc, char* argv[])
         }
     }
 
-    std::string outputText;
-
-    switch (settings.cipherType[0]) {
-        case CipherType::Caesar: {
-            // Run the Caesar cipher (using the specified key and encrypt/decrypt flag) on the input text
-            CaesarCipher cipher{settings.cipherKey[0]};
-            outputText = cipher.applyCipher(inputText, settings.cipherMode);
-            break;
+    std::string outputText{""};
+    if (settings.cipherInventory.size() == 0) {
+        auto cipher = CipherFactory::makeCipher(settings.cipherType[0], settings.cipherKey[0]);
+        if (!cipher) {
+            std::cout << "[error] cannot contruct requested cipher" << std::endl;
+            return 1;
         }
-        case CipherType::Playfair: {
-            PlayfairCipher cipher{settings.cipherKey[0]};
-            outputText = cipher.applyCipher(inputText, settings.cipherMode);
-            break;
-        }
-        case CipherType::Vigenere: {
-            VigenereCipher cipher{settings.cipherKey[0]};
-            outputText = cipher.applyCipher(inputText, settings.cipherMode);
-            break;
+        outputText += cipher->applyCipher(inputText, settings.cipherMode);
+    } else {
+        // Loop over each cipher from user input
+        for (const auto& cipher : settings.cipherInventory) {
+            outputText += cipher -> applyCipher(inputText, settings.cipherMode);
+            outputText += "\n";
         }
     }
 

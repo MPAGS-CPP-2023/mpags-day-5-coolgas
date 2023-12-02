@@ -1,10 +1,9 @@
 #ifndef MPAGSCIPHER_CIPHER_HPP
 #define MPAGSCIPHER_CIPHER_HPP
 
-#include <string>
-
 #include "CipherMode.hpp"
 
+#include <string>
 
 /**
  * \file Cipher.hpp
